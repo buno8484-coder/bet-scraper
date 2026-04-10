@@ -31,3 +31,4 @@ jobs:
           git add dados_jogadores.csv
           git commit -m "update data" || echo "no changes"
           git push
+# teste
