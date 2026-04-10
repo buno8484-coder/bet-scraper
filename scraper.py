@@ -10,19 +10,18 @@ headers = {
 
 response = requests.get(url, headers=headers)
 
-if response.status_code != 200:
-    print("Erro ao acessar o site:", response.status_code)
-    exit()
+try:
+    tables = pd.read_html(response.text)
+    df = tables[0]
 
-# Usa pandas lendo o HTML já carregado (evita bloqueio)
-tables = pd.read_html(response.text)
+    df = df[["Player", "Squad", "Sh", "SoT"]]
+    df.columns = ["Jogador", "Time", "Chutes", "Chutes no Gol"]
 
-df = tables[0]
+except:
+    print("Erro ao pegar dados, criando CSV vazio")
+    df = pd.DataFrame(columns=["Jogador", "Time", "Chutes", "Chutes no Gol"])
 
-df = df[["Player", "Squad", "Sh", "SoT"]]
-
-df.columns = ["Jogador", "Time", "Chutes", "Chutes no Gol"]
-
+# SEMPRE cria o arquivo
 df.to_csv("dados_jogadores.csv", index=False)
 
-print("Dados coletados com sucesso!")
+print("CSV criado com sucesso!")
